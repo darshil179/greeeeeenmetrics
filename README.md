@@ -4,7 +4,7 @@
 ## 🧠 Overview
 
 
-## 🏗️ Architecture
+## 🏗️ Architecture/High-Level Overview
                      ┌──────────────────────────┐
                      │      Vue.js Frontend     │
                      │  (Vite + Tailwind + Axios)│
