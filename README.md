@@ -5,29 +5,39 @@
 
 
 ## 🏗️ Architecture
-greeeeeenmetrics/
-├── backend/
-│   ├── weather-service/
-│   │   ├── src/
-│   │   └── pom.xml
-│   ├── emissions-service/
-│   ├── air-quality-service/
-│   ├── analytics-service/
-│   ├── user-service/
-│   └── pom.xml                # Parent POM if you want Maven multi-module setup
-│
-├── frontend/
-│   ├── src/
-│   ├── package.json
-│   └── vite.config.js
-│
-├── infra/
-│   ├── docker-compose.yml
-│   ├── .env.example
-│   └── README.md
-│
-├── README.md
-└── LICENSE
+                     ┌──────────────────────────┐
+                     │      Vue.js Frontend     │
+                     │  (Vite + Tailwind + Axios)│
+                     │                          │
+                     │  - Displays dashboards    │
+                     │  - Calls backend APIs     │
+                     └───────────┬──────────────┘
+                                 │ REST API calls (HTTPS)
+                                 ▼
+         ┌────────────────────────────────────────────────────┐
+         │               Spring Boot Backend (API Layer)       │
+         │----------------------------------------------------│
+         │   weather-service      → Fetches weather via        │
+         │                        OpenWeatherMap API           │
+         │                                                    │
+         │   emissions-service    → Calculates CO₂ data via    │
+         │                        Carbon Interface API         │
+         │                                                    │
+         │   air-quality-service  → Monitors air quality via   │
+         │                        OpenAQ API                   │
+         │                                                    │
+         │   analytics-service    → Aggregates and analyzes     │
+         │                        eco-metrics & suggestions    │
+         │                                                    │
+         │   user-service         → Handles users, preferences,│
+         │                        and saved metrics            │
+         └───────────────┬─────────────────────────────────────┘
+                         │
+                         ▼
+                🐘 PostgreSQL Database
+                  (Shared across services)
+
+
 
 
 ## 🧩 Tech Stack
