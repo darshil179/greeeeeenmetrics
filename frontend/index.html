@@ -85,8 +85,8 @@
         <div>Temp: ${data.temperature}°C</div>
         <div>Humidity: ${data.humidity}%</div>
         <div>Wind: ${data.wind || 'N/A'} m/s</div>
-        <div>Sunrise: ${convertUnixToTime(data.sunrise, data.timezone)}</div>
-        <div>Sunset: ${convertUnixToTime(data.sunset, data.timezone)}</div>
+        <div>Sunrise: ${data.sunriseTime}</div>
+        <div>Sunset: ${data.sunsetTime}</div>
         <div>Condition: ${data.condition}</div>
     `;
 
