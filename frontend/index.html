@@ -2,156 +2,156 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>🌱 GreeeeeenMetrics Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
     <style>
-        /* Global */
-        * { box-sizing: border-box; margin:0; padding:0; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: background 0.8s;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 0 20px;
-            background: linear-gradient(to top, #e0eafc, #cfdef3);
-        }
+        body { margin:0; padding:0; overflow:hidden; font-family: Arial, sans-serif; transition: background 1.5s; height:100vh; width:100vw; position: relative; }
+        .day-clear { background: linear-gradient(to top, #87ceeb, #ccefff); }
+        .night-clear { background: linear-gradient(to top, #0d1b2a, #1b263b); }
+        .day-cloudy { background: linear-gradient(to top, #a0c4ff, #cfd9e8); }
+        .night-cloudy { background: linear-gradient(to top, #1c1c1c, #2c3e50); }
+        .rain { background: linear-gradient(to top, #4e5d6c, #2c3e50); }
 
-        /* Header */
-        header {
-            width: 100%;
-            text-align: center;
-            background-color: #2E8B57;
-            color: white;
-            padding: 25px 0;
-            font-size: 2em;
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
+        #sun, #moon { width:100px; height:100px; border-radius:50%; position:absolute; top:50px; right:50px; z-index:5; box-shadow:0 0 50px rgba(255,255,255,0.4); }
+        #sun { background: radial-gradient(circle, #fff200, #ffbb33); }
+        #moon { background: radial-gradient(circle, #f1f1f1, #c0c0c0); }
 
-        /* Input */
-        .search-box {
-            margin: 20px 0;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
+        .cloud { position:absolute; background: rgba(255,255,255,0.8); border-radius:50%; width:200px; height:60px; top:100px; animation: moveClouds 40s linear infinite; }
+        .cloud::before, .cloud::after { content: ''; position:absolute; background: inherit; width:100px; height:60px; border-radius:50%; }
+        .cloud::before { top:-20px; left:30px; }
+        .cloud::after { top:-10px; left:80px; }
+        @keyframes moveClouds { 0% { left:-250px; } 100% { left:100%; } }
 
-        input[type=text] {
-            padding: 10px 15px;
-            font-size: 1em;
-            width: 220px;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            outline: none;
-        }
+        #rain { width:100%; height:100%; position:absolute; top:0; left:0; background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.3) 0px, rgba(255,255,255,0.3) 1px, transparent 1px, transparent 4px); animation: rainFall 0.5s linear infinite; }
+        @keyframes rainFall { 0% { background-position: 0 0; } 100% { background-position: 0 100%; } }
 
-        input[type=text]:focus { border-color: #4CAF50; }
+        #stars { position:absolute; width:100%; height:100%; z-index:1; }
+        .star { position:absolute; background:#fff; border-radius:50%; width:2px; height:2px; opacity:0.6; animation: twinkle 2s infinite; }
+        @keyframes twinkle { 0%,100% { opacity:0.6; } 50% { opacity:0.2; } }
 
-        button {
-            padding: 10px 20px;
-            font-size: 1em;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
-            transition: 0.3s;
-        }
-
-        button:hover { background-color: #45a049; }
-
-        /* Weather card */
-        .weather-card {
-            margin-top: 20px;
-            padding: 25px 30px;
-            border-radius: 20px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-            background: rgba(255, 255, 255, 0.95);
-            text-align: center;
-            max-width: 320px;
-            width: 100%;
-            transition: transform 0.3s;
-        }
-
-        .weather-card:hover { transform: translateY(-5px); }
-
-        .weather-card img {
-            width: 100px;
-            height: 100px;
-            margin-bottom: 10px;
-        }
-
-        .weather-card h2 { margin-bottom: 10px; font-size: 1.5em; }
-        .weather-card p { margin: 5px 0; font-size: 1.1em; }
-
-        /* Responsive */
-        @media (max-width: 500px) {
-            .weather-card { max-width: 90%; }
-            input[type=text] { width: 150px; }
-        }
-
-        /* Footer */
-        footer {
-            margin-top: auto;
-            padding: 15px;
-            font-size: 0.9em;
-            color: #333;
-        }
+        #search-container { position:absolute; top:20px; left:50%; transform:translateX(-50%); z-index:10; }
+        #search-container input { padding:10px; font-size:16px; border-radius:5px; border:none; outline:none; width:200px; }
+        #search-container button { padding:10px 15px; font-size:16px; border-radius:5px; border:none; background:#ffbb33; color:#000; cursor:pointer; }
+        #weather-info { position:absolute; bottom:50px; left:50%; transform:translateX(-50%); color:#fff; text-align:center; font-size:20px; z-index:10; }
     </style>
 </head>
 <body>
-<header>🌱 GreeeeeenMetrics Dashboard</header>
-
-<div class="search-box">
-    <input type="text" id="city" placeholder="Enter city">
-    <button onclick="getWeather()">Get Weather</button>
+<div id="search-container">
+    <input type="text" id="cityInput" placeholder="Enter city">
+    <button id="searchBtn">Search</button>
 </div>
 
-<div class="weather-card" id="weather" style="display:none;">
-    <h2 id="w-city"></h2>
-    <img id="w-icon" src="">
-    <p>Temperature: <span id="w-temp"></span>°C</p>
-    <p>Humidity: <span id="w-humidity"></span>%</p>
-    <p>Condition: <span id="w-condition"></span></p>
-</div>
+<div id="weather-info"></div>
 
-<footer>Data provided by OpenWeatherMap | Dashboard by Darshil</footer>
+<div id="sun" class="hidden"></div>
+<div id="moon" class="hidden"></div>
+<div id="clouds" class="cloud hidden"></div>
+<div id="rain" class="hidden"></div>
+<div id="stars" class="hidden">
+    <!-- Stars generated by JS -->
+</div>
 
 <script>
-    function setBackground(condition) {
-        condition = condition.toLowerCase();
-        if(condition.includes('cloud')) {
-            document.body.style.background = 'linear-gradient(to top, #d7d2cc, #304352)';
-        } else if(condition.includes('rain')) {
-            document.body.style.background = 'linear-gradient(to top, #4e54c8, #8f94fb)';
-        } else if(condition.includes('sun') || condition.includes('clear')) {
-            document.body.style.background = 'linear-gradient(to top, #fddb92, #d1fdff)';
+    // generate random stars for night
+    const starsContainer = document.getElementById('stars');
+    for(let i=0;i<100;i++){
+        let star = document.createElement('div');
+        star.className='star';
+        star.style.top=Math.random()*100+'%';
+        star.style.left=Math.random()*100+'%';
+        star.style.width=star.style.height=Math.random()*2+1+'px';
+        starsContainer.appendChild(star);
+    }
+
+    document.getElementById('searchBtn').addEventListener('click', ()=>{
+        const city = document.getElementById('cityInput').value;
+        if(city) fetchWeather(city);
+    });
+
+    function fetchWeather(city){
+        fetch(`http://localhost:8081/api/weather/${city}`)
+            .then(res=>res.json())
+            .then(data=>{
+                displayWeather(data);
+            })
+            .catch(err=>alert('City not found'));
+    }
+
+    function displayWeather(data){
+        const info = document.getElementById('weather-info');
+        const countryFlag = data.country ? countryCodeToFlagEmoji(data.country) : '';
+        info.innerHTML = `
+        <div><strong>${data.city} ${countryFlag}</strong></div>
+        <div>Temp: ${data.temperature}°C</div>
+        <div>Humidity: ${data.humidity}%</div>
+        <div>Wind: ${data.wind || 'N/A'} m/s</div>
+        <div>Sunrise: ${convertUnixToTime(data.sunrise, data.timezone)}</div>
+        <div>Sunset: ${convertUnixToTime(data.sunset, data.timezone)}</div>
+        <div>Condition: ${data.condition}</div>
+    `;
+
+        const current = Math.floor(Date.now()/1000);
+        const sunrise = data.sunrise || 0;
+        const sunset = data.sunset || 0;
+        const isDay = current >= sunrise && current <= sunset;
+
+        updateBackground(data.condition.toLowerCase(), isDay);
+    }
+
+    function updateBackground(condition, isDay){
+        const body = document.body;
+        const sun = document.getElementById('sun');
+        const moon = document.getElementById('moon');
+        const clouds = document.getElementById('clouds');
+        const rain = document.getElementById('rain');
+        const stars = document.getElementById('stars');
+
+        body.className='';
+        [sun, moon, clouds, rain, stars].forEach(el=>el.classList.add('hidden'));
+
+        if(condition.includes('rain') || condition.includes('drizzle')){
+            body.classList.add('rain');
+            rain.classList.remove('hidden');
+            clouds.classList.remove('hidden');
+        } else if(condition.includes('cloud')){
+            body.classList.add(isDay ? 'day-cloudy':'night-cloudy');
+            clouds.classList.remove('hidden');
+        } else if(condition.includes('clear')){
+            if(isDay){
+                body.classList.add('day-clear');
+                sun.classList.remove('hidden');
+            } else {
+                body.classList.add('night-clear');
+                moon.classList.remove('hidden');
+                stars.classList.remove('hidden');
+            }
         } else {
-            document.body.style.background = 'linear-gradient(to top, #e0eafc, #cfdef3)';
+            body.classList.add('day-cloudy');
+            clouds.classList.remove('hidden');
         }
     }
 
-    function getWeather() {
-        const city = document.getElementById('city').value;
-        if(!city) return alert("Please enter a city!");
-        fetch(`http://localhost:8081/api/weather/${city}`)
-            .then(res => {
-                if(!res.ok) throw new Error("City not found or API error");
-                return res.json();
-            })
-            .then(data => {
-                document.getElementById('weather').style.display = 'inline-block';
-                document.getElementById('w-city').innerText = data.city;
-                document.getElementById('w-temp').innerText = data.temperature;
-                document.getElementById('w-humidity').innerText = data.humidity;
-                document.getElementById('w-condition').innerText = data.condition;
-                const icon = data.icon || '01d';
-                document.getElementById('w-icon').src = `http://openweathermap.org/img/wn/${icon}@2x.png`;
-                setBackground(data.condition);
-            })
-            .catch(err => alert(err.message));
+    function convertUnixToTime(unix, timezone){
+        if(!unix) return 'N/A';
+        const date = new Date((unix + (timezone || 0)) * 1000);
+        const hours = date.getUTCHours().toString().padStart(2,'0');
+        const minutes = date.getUTCMinutes().toString().padStart(2,'0');
+        return `${hours}:${minutes}`;
     }
+
+    function countryCodeToFlagEmoji(countryCode){
+        return countryCode
+            .toUpperCase()
+            .replace(/./g, char =>
+                String.fromCodePoint(127397 + char.charCodeAt())
+            );
+    }
+
+    // Load default city
+    document.addEventListener('DOMContentLoaded', ()=>{
+        document.getElementById('cityInput').value='Hamilton';
+        fetchWeather('Hamilton');
+    });
 </script>
 </body>
 </html>
