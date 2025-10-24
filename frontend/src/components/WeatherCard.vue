@@ -1,14 +1,32 @@
 <template>
-  <div class="bg-white text-gray-800 p-6 rounded-2xl shadow-lg w-80 text-center">
-    <h2 class="text-2xl font-semibold mb-2">{{ weather.name }}</h2>
-    <p class="text-lg capitalize">{{ weather.weather[0].description }}</p>
-    <img
-        :src="`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`"
-        alt="weather icon"
-        class="mx-auto my-2"
-    />
-    <p class="text-5xl font-bold">{{ Math.round(weather.main.temp) }}°C</p>
-    <p class="mt-2">Humidity: {{ weather.main.humidity }}%</p>
+  <div class="text-center space-y-4">
+    <h2 class="text-2xl font-semibold">{{ weather.name }}</h2>
+
+    <div class="flex flex-col items-center">
+      <img
+          :src="`https://openweathermap.org/img/wn/${weather.weather[0].icon}@4x.png`"
+          :alt="weather.weather[0].description"
+          class="drop-shadow-lg"
+      />
+      <p class="capitalize text-lg opacity-90">{{ weather.weather[0].description }}</p>
+    </div>
+
+    <div class="text-5xl font-bold">{{ weather.main.temp.toFixed(1) }}°C</div>
+
+    <div class="grid grid-cols-3 gap-4 mt-6 text-sm">
+      <div class="bg-white/10 p-3 rounded-lg shadow-sm">
+        <p class="font-semibold">Humidity</p>
+        <p>{{ weather.main.humidity }}%</p>
+      </div>
+      <div class="bg-white/10 p-3 rounded-lg shadow-sm">
+        <p class="font-semibold">Wind</p>
+        <p>{{ weather.wind.speed }} m/s</p>
+      </div>
+      <div class="bg-white/10 p-3 rounded-lg shadow-sm">
+        <p class="font-semibold">Feels Like</p>
+        <p>{{ weather.main.feels_like.toFixed(1) }}°C</p>
+      </div>
+    </div>
   </div>
 </template>
 
