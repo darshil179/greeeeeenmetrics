@@ -35,14 +35,16 @@ const city = ref('Toronto')
 const weather = ref(null)
 
 async function fetchWeather() {
-  const apiKey = '5e5778cd98c2e8bd3bdd545cdc2da10a' // Replace with your real key
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value}&appid=${apiKey}&units=metric`
-  const res = await fetch(url)
-  if (!res.ok) {
-    alert('City not found!')
-    return
+  try {
+    const res = await fetch(`http://localhost:8081/api/weather/${city.value}`)
+    if (!res.ok) {
+      alert('City not found')
+      return
+    }
+    weather.value = await res.json()
+  } catch (e) {
+    alert('Error connecting to backend')
   }
-  weather.value = await res.json()
 }
 
 // Load default city
