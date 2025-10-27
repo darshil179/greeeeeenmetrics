@@ -1,7 +1,12 @@
 # 🌍 GreeeeeenMetrics — Climate Data Dashboard
 > Monitor CO₂, weather, and air quality with actionable eco-insights.
 
-## 🧠 Overview
+## 🧠 Overview(demo)
+<img width="1585" height="820" alt="image" src="https://github.com/user-attachments/assets/73fd2820-4f62-45be-9c97-797c9df3e107" />
+
+<img width="1380" height="915" alt="image" src="https://github.com/user-attachments/assets/ac95877a-7c6b-4a4a-b51c-8afc3060989e" />
+
+
 
 
 ## 🏗️ Architecture/High-Level Overview
