@@ -5,20 +5,18 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.Value;
 
 @RestController
-@RequestMapping("/api/weather")
-public class WeatherController {
+@RequestMapping("/api/geocode")
+@CrossOrigin(origins = "http://localhost:5173")
+public class GeocodingController {
 
     @Value("${openweathermap.api.key}")
     private String apiKey;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @GetMapping("/{lat}/{lon}")
-    public Object getWeather(@PathVariable double lat, @PathVariable double lon) {
-        String url = String.format(
-                "https://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&units=metric&appid=%s",
-                lat, lon, apiKey
-        );
+    @GetMapping("/{city}")
+    public Object getCoordinates(@PathVariable String city) {
+        String url = "https://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=1&appid=" + apiKey;
         return restTemplate.getForObject(url, Object.class);
     }
 }
